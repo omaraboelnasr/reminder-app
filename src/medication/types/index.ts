@@ -10,3 +10,8 @@ export type CreateMedicationParams = {
 };
 
 export type UpdateMedicationParams = Partial<CreateMedicationParams>;
+
+export type ListMedicationParams = {
+  skip: number;
+  limit: number;
+};

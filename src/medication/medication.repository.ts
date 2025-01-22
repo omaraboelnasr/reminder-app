@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Medication } from './schemas/medication.schema';
+import { Medication } from '../schemas/medication.schema';
 import { CreateMedicationParams, UpdateMedicationParams } from './types';
 
 @Injectable()
@@ -27,5 +27,15 @@ export class MedicationRepository {
 
   async deleteMedication(id: string) {
     return this.medicationModel.findByIdAndDelete(id);
+  }
+
+  async getAllMedication(limit: number, skip: number, userId: string) {
+    const total = await this.medicationModel.countDocuments({ userId });
+    const medications = await this.medicationModel
+      .find({ userId })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+    return { medications, total };
   }
 }

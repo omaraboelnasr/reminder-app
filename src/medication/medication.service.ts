@@ -4,7 +4,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { MedicationRepository } from './medication.repository';
-import { CreateMedicationParams, UpdateMedicationParams } from './types';
+import {
+  CreateMedicationParams,
+  ListMedicationParams,
+  UpdateMedicationParams,
+} from './types';
 
 @Injectable()
 export class MedicationService {
@@ -64,6 +68,41 @@ export class MedicationService {
       await this.MedicationRepository.deleteMedication(id);
 
       return { message: 'Medication deleted successfully' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getMedication(id: string, userId: string) {
+    try {
+      const existingMedication =
+        await this.MedicationRepository.findMedicationById(id);
+
+      if (!existingMedication) {
+        throw new NotFoundException(`Medication with ID "${id}" not found`);
+      }
+
+      if (existingMedication.userId.toString() !== userId) {
+        throw new UnauthorizedException(
+          'You are not authorized to get this medication',
+        );
+      }
+      return existingMedication;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllMedication(params: ListMedicationParams, userId: string) {
+    try {
+      const safeLimit = Math.min(params.limit, 20);
+      const { medications, total } =
+        await this.MedicationRepository.getAllMedication(
+          safeLimit,
+          params.skip,
+          userId,
+        );
+      return { data: medications, limit: safeLimit, skip: params.skip, total };
     } catch (error) {
       throw error;
     }
