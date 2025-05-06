@@ -5,7 +5,7 @@ import { Medication } from './medication.schema';
 @Entity({ name: 'medicationSchedule' })
 export class MedicationSchedule {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @ManyToOne(() => User, (user) => user.medicationSchedule)
   user: User;
