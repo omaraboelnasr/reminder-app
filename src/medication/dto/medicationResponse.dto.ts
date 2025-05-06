@@ -1,23 +1,29 @@
 import { Medication } from './../../schemas/medication.schema';
 
 export class MedicationResponseDto {
-  _id: string;
-  name: string;
+  id: string;
+  userId: any;
+  medicationName: string;
   dosage: string;
   frequency: string;
-  duration: string;
-  userId: string;
-  firstIntakeDate?: Date;
+  duration: number;
+  initialStock: number;
+  lowStock?: boolean;
+  medicationNotes?: string;
+  firstIntake?: Date;
   startDate?: Date;
   endDate?: Date;
   constructor(medication: Medication) {
-    this._id = medication._id.toString();
-    this.name = medication.name;
+    this.id = medication.id;
+    this.userId = medication.user.id;
+    this.medicationName = medication.medicationName;
     this.dosage = medication.dosage;
     this.frequency = medication.frequency;
     this.duration = medication.duration;
-    this.userId = medication.userId.toString();
-    this.firstIntakeDate = medication.firstIntakeDate;
+    this.initialStock = medication.initialStock;
+    this.lowStock = medication.lowStock;
+    this.medicationNotes = medication.medicationNotes;
+    this.firstIntake = medication.firstIntake;
     this.startDate = medication.startDate;
     this.endDate = medication.endDate;
   }

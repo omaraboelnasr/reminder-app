@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateMedicationDTO {
   @IsString()
@@ -13,12 +13,12 @@ export class UpdateMedicationDTO {
   @IsOptional()
   frequency?: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  duration?: string;
+  duration?: number;
 
   @IsOptional()
-  firstIntakeDate?: Date;
+  firstIntake?: Date;
 
   @IsOptional()
   startDate?: Date;

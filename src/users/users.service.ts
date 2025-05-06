@@ -23,10 +23,10 @@ export class UsersService {
   async getUser(id: string) {
     try {
       const user = await this.userRepository.getUser(id);
-      if (!user) {
+      if (user.length == 0) {
         throw new NotFoundException(`user with id: ${id} not found`);
       }
-      return user;
+      return user[0];
     } catch (error) {
       throw error;
     }

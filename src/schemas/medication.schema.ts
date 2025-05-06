@@ -1,31 +1,62 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
 import { User } from 'src/schemas/user.schema';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { MedicationSchedule } from './medication-schedule.schema';
 
-@Schema({ timestamps: true })
-export class Medication extends Document {
-  @Prop({ required: true })
-  name: string;
+@Entity({ name: 'medications' })
+export class Medication {
+  @PrimaryGeneratedColumn('uuid') // Use UUID for primary key
+  id: string;
 
-  @Prop({ required: true })
+  @Column()
+  medicationName: string;
+
+  @Column()
   dosage: string; // 1 pil
 
-  @Prop({ required: true })
-  frequency: string; // every 8 hours
+  @Column()
+  frequency: string; // 3 times per day = every 8 h
 
-  @Prop({ required: true })
-  duration: string; // for 5 days
+  @Column()
+  duration: number; // for 5 days
 
-  @Prop()
-  firstIntakeDate: Date;
+  @Column({ nullable: true, default: '' })
+  medicationNotes?: string;
 
-  @Prop()
+  @Column()
+  initialStock: number; //total amount 10 pills
+
+  @Column({ nullable: true, default: false })
+  lowStock: boolean; // Boolean field for tracking low stock
+
+  @Column({ nullable: true })
+  firstIntake: Date;
+
+  @Column({ nullable: true })
   startDate: Date;
 
-  @Prop()
+  @Column({ nullable: true })
   endDate: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  userId: User;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.medications)
+  user: User;
+
+  @OneToMany(
+    () => MedicationSchedule,
+    (medicationSchedules) => medicationSchedules.medication,
+  ) // Reverse relation
+  medicationSchedule: MedicationSchedule[];
 }
-export const MedicationSchema = SchemaFactory.createForClass(Medication);

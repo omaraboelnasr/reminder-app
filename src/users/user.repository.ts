@@ -1,31 +1,61 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/schemas/user.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 import { UpdateUserParams } from './types';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   async getAllUsers(limit: number, skip: number) {
-    const total = await this.userModel.countDocuments();
-    const users = await this.userModel.find().skip(skip).limit(limit).lean();
+    const users = await this.userRepository.query(
+      `SELECT * FROM "user" ORDER BY "createdAt" DESC LIMIT $1 OFFSET $2`,
+      [limit, skip],
+    );
+
+    const totalResult = await this.userRepository.query(
+      `SELECT COUNT(*) FROM "user"`,
+    );
+
+    const total = parseInt(totalResult[0].count, 10);
+
     return { users, total };
+    // const [users, total] = await this.userRepository.findAndCount({
+    //   skip,
+    //   take: limit,
+    // });
+    // return { users, total };
   }
 
   async getUser(id: string) {
-    return this.userModel.findById(id).lean();
+    return await this.userRepository.query(
+      `SELECT * FROM "user" WHERE id= $1`,
+      [id],
+    );
+    // return this.userRepository.findOne({
+    //   where: { id },
+    // });
   }
 
   async getUserByEmail(email: string) {
-    return this.userModel.findOne({ email: email }).lean();
+    return this.userRepository.query('SELECT * FROM "user" WHERE email= $1', [
+      email,
+    ]);
+    // return this.userRepository.findOne({
+    //   where: { email },
+    // });
   }
   async updateUser(id: string, user: UpdateUserParams) {
-    return this.userModel.findByIdAndUpdate(id, user, { new: true });
+    await this.userRepository.update(id, user);
+    return this.getUser(id);
   }
 
   async deleteUser(id: string) {
-    return this.userModel.findByIdAndDelete(id);
+    return this.userRepository.query(`DELETE FROM "user" WHERE "id"= $1`, [id]);
+    // return this.userRepository.delete(id);
   }
 }

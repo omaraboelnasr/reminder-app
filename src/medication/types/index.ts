@@ -1,9 +1,12 @@
 export type CreateMedicationParams = {
-  name: string;
+  medicationName: string;
   dosage: string;
   frequency: string;
-  duration: string;
-  userId: string;
+  duration: number;
+  userId: any;
+  initialStock: number;
+  lowStock?: boolean;
+  medicationNotes?: string;
   firstIntakeDate?: Date;
   startDate?: Date;
   endDate?: Date;

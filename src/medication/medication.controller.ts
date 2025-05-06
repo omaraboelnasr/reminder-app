@@ -30,10 +30,7 @@ export class MedicationController {
     @Request() req: any,
   ) {
     const userId = req.user.userId;
-    return this.medicationService.createMedication({
-      ...createMedicationDTO,
-      userId,
-    });
+    return this.medicationService.createMedication(createMedicationDTO, userId);
   }
 
   @Patch('/:id')
@@ -68,7 +65,7 @@ export class MedicationController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getAllUsers(
+  async getAllMedication(
     @Query() queryParams: ListMedicationsRequest,
     @Request() req: any,
   ) {

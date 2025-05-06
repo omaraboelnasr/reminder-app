@@ -1,20 +1,45 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude } from 'class-transformer';
-import { Document } from 'mongoose';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Medication } from './medication.schema';
+import { MedicationSchedule } from './medication-schedule.schema';
 
-@Schema({ timestamps: true })
-export class User extends Document {
-  @Prop({ required: false })
-  userName?: string;
+@Entity()
+@Unique(['email', 'phoneNumber']) // Ensuring unique constraint for both email and phoneNumber
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string; // Automatically generated primary key
 
-  @Prop({ unique: true, required: true })
-  email: string;
+  @Column({ nullable: true })
+  userName?: string; // Optional column
 
-  @Prop({ unique: true, required: true })
-  phoneNumber: string;
+  @Column({ unique: true })
+  email: string; // Unique email column
 
-  @Prop({ required: true })
-  @Exclude()
-  password: string;
+  @Column({ unique: true })
+  phoneNumber: string; // Unique phone number column
+
+  @Column({ select: false })
+  password: string; // Password column
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @OneToMany(() => Medication, (medication) => medication.user) // Reverse relation
+  medications: Medication[];
+
+  @OneToMany(
+    () => MedicationSchedule,
+    (medicationSchedules) => medicationSchedules.user,
+  ) // Reverse relation
+  medicationSchedule: MedicationSchedule[];
 }
-export const UserSchema = SchemaFactory.createForClass(User);

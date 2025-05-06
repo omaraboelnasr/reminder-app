@@ -1,9 +1,19 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Min,
+} from 'class-validator';
 
 export class CreateMedicationDTO {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  medicationName: string;
 
   @IsString()
   @IsNotEmpty()
@@ -13,12 +23,21 @@ export class CreateMedicationDTO {
   @IsNotEmpty()
   frequency: string;
 
-  @IsString()
-  @IsNotEmpty()
-  duration: string;
+  @Transform(({ value }) => parseInt(value, 10))
+  @IsInt()
+  @Min(1)
+  duration: number;
 
   @IsOptional()
-  firstIntakeDate?: Date;
+  medicationNotes: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  initialStock: number;
+
+  @IsOptional()
+  @IsDateString()
+  firstIntake?: string;
 
   @IsOptional()
   startDate?: Date;
@@ -26,5 +45,7 @@ export class CreateMedicationDTO {
   @IsOptional()
   endDate?: Date;
 
-  userId: string;
+  @IsOptional()
+  @IsUUID()
+  userId?: string;
 }

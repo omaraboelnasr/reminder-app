@@ -9,14 +9,32 @@ import {
   ListMedicationParams,
   UpdateMedicationParams,
 } from './types';
+import { CreateMedicationDTO } from './dto/createMedication.dto';
+import { addDays, parse } from 'date-fns';
 
 @Injectable()
 export class MedicationService {
   constructor(private MedicationRepository: MedicationRepository) {}
 
-  async createMedication(medication: CreateMedicationParams) {
+  async createMedication(medication: CreateMedicationDTO, userId: string) {
     try {
-      await this.MedicationRepository.createMedication(medication);
+      const medicationData: CreateMedicationParams = {
+        ...medication,
+        userId: userId,
+      };
+
+      if (medication.firstIntake) {
+        const startDate = parse(
+          medication.firstIntake,
+          'yyyy-MM-dd HH:mm:ss',
+          new Date(),
+        );
+        const durationDays = medication.duration;
+        medicationData.startDate = startDate;
+        medicationData.endDate = addDays(startDate, durationDays);
+      }
+
+      await this.MedicationRepository.createMedication(medicationData);
       return { message: 'Medication added successfully' };
     } catch (error) {
       throw error;
@@ -36,7 +54,7 @@ export class MedicationService {
         throw new NotFoundException(`Medication with ID "${id}" not found`);
       }
 
-      if (existingMedication.userId.toString() !== userId) {
+      if (existingMedication.user.id !== userId) {
         throw new UnauthorizedException(
           'You are not authorized to update this medication',
         );
@@ -59,7 +77,7 @@ export class MedicationService {
         throw new NotFoundException(`Medication with ID "${id}" not found`);
       }
 
-      if (existingMedication.userId.toString() !== userId) {
+      if (existingMedication.user.id !== userId) {
         throw new UnauthorizedException(
           'You are not authorized to delete this medication',
         );
@@ -77,12 +95,10 @@ export class MedicationService {
     try {
       const existingMedication =
         await this.MedicationRepository.findMedicationById(id);
-
       if (!existingMedication) {
         throw new NotFoundException(`Medication with ID "${id}" not found`);
       }
-
-      if (existingMedication.userId.toString() !== userId) {
+      if (existingMedication.user.id !== userId) {
         throw new UnauthorizedException(
           'You are not authorized to get this medication',
         );
