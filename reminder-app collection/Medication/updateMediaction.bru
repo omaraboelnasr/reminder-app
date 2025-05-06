@@ -1,0 +1,24 @@
+meta {
+  name: updateMediaction
+  type: http
+  seq: 2
+}
+
+patch {
+  url: http://localhost:3000/medication/6807bcf0bb858b6566733c76
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im9tYXJhYm9lbG5hc3JAbWFpbC5jb20iLCJ1c2VySWQiOiI2ODA3YmM1YWJiODU4YjY1NjY3MzNjNzAiLCJ1c2VyTmFtZSI6Im9tYXJhYm9lbG5hc3IiLCJpYXQiOjE3NDUzMzc1NDUsImV4cCI6MTc0NTM0MTE0NX0.GJ-3quohNcG2rf-jgYTipNQDU2uCKCSgYXasCSiDIbE
+}
+
+body:json {
+  {
+    "name":"SeptazolUpdate",
+    "dosage":"2",
+    "frequency":"12",
+    "duration":"5"
+  }
+}

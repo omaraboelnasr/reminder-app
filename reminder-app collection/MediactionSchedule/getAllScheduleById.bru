@@ -1,0 +1,15 @@
+meta {
+  name: getAllScheduleById
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/medication-schedule/medication/425c26d2-84a3-4737-a622-f4e9269a93d7
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbC5jb20iLCJ1c2VySWQiOiJjMTdhZWZmZS00ODNiLTRlNDQtOTgwMy1iMzIyMDAzZTRkNTciLCJ1c2VyTmFtZSI6InRlc3QiLCJpYXQiOjE3NDY1MjM2MDksImV4cCI6MTc0NjU2NjgwOX0.rDvtiKMs_16dyJeO3AUcEn_I1V7VYFbWllfxqmjo-to
+}

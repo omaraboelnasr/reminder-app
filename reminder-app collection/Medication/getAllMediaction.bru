@@ -1,0 +1,15 @@
+meta {
+  name: getAllMediaction
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:3000/medication/
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbC5jb20iLCJ1c2VySWQiOiJjMTdhZWZmZS00ODNiLTRlNDQtOTgwMy1iMzIyMDAzZTRkNTciLCJ1c2VyTmFtZSI6InRlc3QiLCJpYXQiOjE3NDY1MjM2MDksImV4cCI6MTc0NjU2NjgwOX0.rDvtiKMs_16dyJeO3AUcEn_I1V7VYFbWllfxqmjo-to
+}
